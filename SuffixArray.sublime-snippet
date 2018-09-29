@@ -1,0 +1,73 @@
+<snippet>
+	<content><![CDATA[
+namespace SA{
+    static const int MAXN = 2000010;
+    static const int MAXLOGN = 23;
+    string s;
+    int n,gap;
+    int sa[MAXN], pos[MAXN], tmp[MAXN], lcp[MAXN], logs[MAXN], lcptable[MAXLOGN][MAXN];
+
+    bool sufCmp(int i,int j){
+        if(pos[i] != pos[j])
+            return pos[i] < pos[j];
+        i += gap;j += gap;
+        return(i < n && j < n) ? pos[i] < pos[j] : i > j;
+    }
+    void buildSA(){
+        n = s.size();
+        for(int i=0;i<n;i++)
+            sa[i] = i,pos[i] = s[i];
+        for(gap = 1;;gap *= 2){
+            sort(sa,sa+n,sufCmp);
+            for(int i=0;i<n-1;i++)
+                tmp[i + 1] = tmp[i] + sufCmp(sa[i],sa[i + 1]);
+            for(int i=0;i<n;i++)
+                pos[sa[i]] = tmp[i];
+            if(tmp[n-1] == n-1)
+                break;
+        }
+    }
+    void buildLCP(){
+        for (int i=0,k=0;i<n;++i){
+            if(pos[i]!=n-1){
+                for(int j=sa[pos[i]+1];s[i+k]==s[j+k];)
+                    ++k;
+                lcp[pos[i]]=k;
+                if(k)
+                    --k;
+            }
+        }
+    }
+    void buildLogs(){
+        int g=2;
+        while(g<=n){
+            logs[g]=1;
+            g=(g<<1);
+        }
+        for(int i=1;i<=n;i++)
+            logs[i]+=logs[i-1];
+    }
+    void buildLcpSparseTable(){
+        for(int i=0;i<n;i++)
+            lcptable[0][i]=lcp[i];
+        for(int j=1;(1<<j)<=n;j++)
+            for(int i=0;i+(1<<j)-1<n;i++)
+                lcptable[j][i]=min(lcptable[j-1][i],lcptable[j-1][i+(1<<(j-1))]);
+    }
+    int lcpQuery(int l,int r){
+        if(l>r)     swap(l,r);
+        if(l==r)    return INF;
+        if(l+1==r)  return lcp[l];
+        r--;
+        int k=logs[r-l+1];
+        return min(lcptable[k][l],lcptable[k][r-(1<<k)+1]);
+    }
+};
+
+using namespace SA;
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>SuffixArray</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

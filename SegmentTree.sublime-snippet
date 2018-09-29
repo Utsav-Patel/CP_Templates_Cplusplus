@@ -1,0 +1,90 @@
+<snippet>
+	<content><![CDATA[
+template <typename T>
+class ST{
+    public:
+        const int MAXN = 500010;
+        vector<T> arr;
+        vector<T> lazy;
+        T constant;
+
+        ST(){
+            arr.resize(MAXN<<2);
+            lazy.resize(MAXN<<2);
+            constant = 0;
+            buildSegmentTree(0,MAXN-1,0);
+        }
+
+        T mergeSegmentTree(T a,T b){
+            return a+b;
+        }
+
+        void buildSegmentTree(int s,int e,int idx){
+            if(s==e)
+                arr[idx] = constant;
+            else{
+                int mid = (s+e)>>1;
+                buildSegmentTree(s,mid,(idx<<1)+1);
+                buildSegmentTree(mid+1,e,(idx<<1)+2);
+                arr[idx] = mergeSegmentTree(arr[(idx<<1)+1],arr[(idx<<1)+2]);
+            }
+        }
+
+        T lazyMerge(T a,T b){
+            return a+b;
+        }
+
+        void check(int ind,int l,int r){
+            if(lazy[ind]!=constant){
+                arr[ind] = lazyMerge(arr[ind],lazy[ind]);
+                if(l!=r){
+                    lazy[(ind<<1)+1] = lazyMerge(lazy[(ind<<1)+1],lazy[ind]);
+                    lazy[(ind+1)<<1] = lazyMerge(lazy[(ind+1)<<1],lazy[ind]);
+                }
+                lazy[ind] = constant;
+            }
+        }
+
+        void updateSegmentTree(int s,int e,int idx,int x,int y,T z){
+            check(idx,s,e);
+            if(x>y||s>e||y<s||x>e)
+                return;
+            else if(x<=s&&y>=e){
+                arr[idx] = lazyMerge(arr[idx],z);
+                if(s!=e){
+                    lazy[(idx<<1)+1] = lazyMerge(lazy[(idx<<1)+1],z);
+                    lazy[(idx<<1)+2] = lazyMerge(lazy[(idx<<1)+2],z);
+                }
+                return ;
+            }
+            int mid = (s+e)>>1;
+            updateSegmentTree(s,mid,(idx<<1)+1,x,y,z);
+            updateSegmentTree(mid+1,e,(idx+1)<<1,x,y,z);
+            arr[idx] = mergeSegmentTree(arr[(idx<<1)+1],arr[(idx<<1)+2]);
+        }
+
+        void modify(int start,int end,T value){
+            updateSegmentTree(0, MAXN-1, 0, start, end, value);
+        }
+
+        T querySegmentTree(int s,int e,int idx,int x,int y){
+            check(idx,s,e);
+            if(x>y||s>e||y<s||x>e)
+                return constant;
+            else if(x<=s&&y>=e)
+                return arr[idx];
+            int mid = (s+e)>>1;
+            return mergeSegmentTree(querySegmentTree(s,mid,(idx<<1)+1,x,y),querySegmentTree(mid+1,e,(idx<<1)+2,x,y));
+        }
+
+        T get(int start, int end){
+            return querySegmentTree(0, MAXN-1, 0, start, end);
+        }
+};
+$1
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>SegmentTree</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -1,0 +1,40 @@
+<snippet>
+	<content><![CDATA[
+template <typename T>
+class Fenwick{
+    public:
+        vector<T> v;
+        int n;
+
+        // Comment this constructor if you want to use Array of this Fenwick class.
+        // Assign value manually of n
+
+        Fenwick(int _n){
+            n = _n;
+            v.resize(n);
+        }
+
+        void modify(int x,T val){
+            x++;
+            while(x<n){
+                v[x]+=val;
+                x+=(x&-x);
+            }
+        }
+
+        T get(int x){
+            x++;
+            T ann {};
+            while(x>0){
+                ann += v[x];
+                x -= (x&-x);
+            }
+            return ann;
+        }
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>FenwickTree</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

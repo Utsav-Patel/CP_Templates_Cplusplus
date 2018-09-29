@@ -1,0 +1,67 @@
+<snippet>
+	<content><![CDATA[
+template <typename T>
+class ConvexHull{
+    private:
+        bool useLessLines(pair<T, T> &left, pair<T, T> &middle, pair<T, T> &right){
+            return ((double)(right.second - left.second)/(left.first - right.first)) <= ((double)(middle.second - left.second)/(left.first - middle.first));
+        }
+
+        void addLine(pair<T, T> &line){
+            while(hull.size()>1 && useLessLines(hull[hull.size()-2], hull[hull.size()-1], line))
+                hull.pop_back();
+            hull.push_back(line);
+        }
+
+        T query1(T x){
+            T ans = (1LL << 60);
+            for(int i=cur;i<hull.size();i++){
+                T tmp = x*hull[i].first + hull[i].second;
+                if(tmp < ans){
+                    ans = tmp;
+                    cur = i;
+                }
+                else
+                    break;
+            }
+            return ans;
+        }
+
+        T query2(T x){
+            T ans = (1LL <<60);
+            int l = 0,r = hull.size()-1;
+            while(r-l>2){
+                int mid = l+r >>1;
+                T ans1 = x*hull[mid].first + hull[mid].second;
+                T ans2 = x*hull[mid+1].first + hull[mid+1].second;
+                if(ans1<ans2)
+                    r = mid;
+                else
+                    l = mid;
+                ans = min(ans, min(ans1, ans2));
+            }
+
+            for(int i=l;i<=r;i++)
+                ans = min(ans, x*hull[i].first + hull[i].second);
+            return ans;
+        }
+
+    public:
+        vector< pair<T,T> > hull;
+        int cur = 0;
+
+        void add(T m, T b){
+            pair<T, T> c = make_pair(m, b);
+            addLine(c);
+        }
+
+        T query(T x){
+            return query1(x);
+        }
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>MinConvexHull</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
