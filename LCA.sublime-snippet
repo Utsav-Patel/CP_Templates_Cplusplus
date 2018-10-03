@@ -46,8 +46,7 @@ struct LCA{
         }
         return lca[0][u];
     }
-}lca;
-$1
+};
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>LCA</tabTrigger>

@@ -81,7 +81,6 @@ class ST{
             return querySegmentTree(0, MAXN-1, 0, start, end);
         }
 };
-$1
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>SegmentTree</tabTrigger>

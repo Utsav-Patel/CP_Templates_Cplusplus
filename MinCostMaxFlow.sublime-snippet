@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-	struct MinCostMaxFlow{
+struct MinCostMaxFlow{
     typedef long long ll;
     typedef pair<int, int> pii;
 
@@ -93,7 +93,7 @@
       }
       return make_pair(flow, flowCost);
     }
-}mf;
+};
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>MinCostMaxFlow</tabTrigger>
